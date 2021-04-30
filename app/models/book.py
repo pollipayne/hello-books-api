@@ -9,3 +9,8 @@ class Book(db.Model): #an instance of SQLAlchemy Books is inheriting
     # creates a DB column called title, sets it of type String
     description = db.Column(db.String)
     # creates a DB column called description, sets it of type String
+
+    def to_json(self):
+        return {"id": self.id, 
+                "title": self.title, 
+                "description": self.description}
