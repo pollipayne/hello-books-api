@@ -15,22 +15,54 @@ def is_int(value):
     except ValueError:
         return False
 
-@books_bp.route("/<book_id>", methods=["GET"])
-def get_single_book(book_id):
+def not_found():
+    return {"Success": False, 
+            "Message": "The resource was not found"}, 404
+
+def found():
+    return {"Success": True, 
+            "Message": f"The resource was updated."}, 200
+
+
+
+@books_bp.route("/<book_id>", methods=["GET", "PUT", "DELETE"])
+def handle_single_book(book_id):
     # try to find book with given ID 
+
     if not is_int(book_id):
         return {"Success": False ,
                 "message": f"{book_id} must be an integer."}, 400
-    book = Book.query.get(book_id)
-    if book:
-        return book.to_json(), 200
-    return {"Succes": False, 
-            "Book ID": "Book ID was not found"}, 404
+    book = Book.query.get_or_404(book_id, description="Resource not found.")
+    #get or 404 will return a 404 not found if the response is NONE- 
+    # can add description param to show descript. but doesn't return in json
+
+    # if book is None: 
+    #     return not_found()
+    
+    if request.method == "GET":
+        if book:
+            return book.to_json(), 200
+    elif request.method == "PUT": 
+        request_body = request.get_json()
+        book.title = request_body['title']
+        book.description = request_body['description']
+        db.session.commit()
+        return found()
+    elif request.method == "DELETE":
+        db.session.delete(book)
+        db.session.commit()
+        return found()
+
+
 
 
 @books_bp.route("", methods=["GET"])
 def books_index():
-    books = Book.query.all()
+    title_query = request.args.get("title")
+    if title_query:
+        books = Book.query.filter_by(title=title_query)
+    else:
+        books = Book.query.all()
     books_response = []
     for book in books:
         books_response.append(book.to_json())
@@ -45,6 +77,10 @@ def books():
     db.session.commit()
 
     return ({"Success": True, "Book ID": new_book.id}, 201)
+
+
+
+
 
 
 
