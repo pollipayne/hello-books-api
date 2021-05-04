@@ -72,4 +72,18 @@ def test_post_book_with_valid_data(client):
     assert response_body["Success"] == True
 
 
+#get one book with query params 
+def test_get_one_book_by_query_params(client, two_saved_books):
+    #Act
+    response = client.get("/books", query_string={"title": "Noodles!"})
+    response_body = response.get_json()
 
+    #assert 
+    assert response.status_code == 200
+    assert response_body[0] == [{ "id": 1, 
+                            "title": "Noodles!", 
+                            "description": "All noodles all the time."}]
+
+
+
+#

@@ -32,3 +32,11 @@ def two_saved_books(app):
 
     db.session.add_all([noodle_book, bean_book])
     db.session.commit()
+
+
+@pytest.fixture
+def single_book_data(app):
+    book_data = Book(title="Pasta!", 
+                    description="All pasta all the time.")
+
+    
