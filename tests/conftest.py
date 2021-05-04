@@ -28,7 +28,7 @@ def two_saved_books(app):
     noodle_book = Book(title="Noodles!", 
                         description="All noodles all the time.")
     bean_book = Book(title="Beans!", 
-                    description="All beans all the time!")
+                    description="All beans all the time.")
 
     db.session.add_all([noodle_book, bean_book])
     db.session.commit()
