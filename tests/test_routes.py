@@ -61,7 +61,15 @@ def test_get_one_book_by_id_with_no_valid_data(client):
 
 
 #post books returns 201 w/ valid request body 
+def test_post_book_with_valid_data(client):
+    post = client.post('/books', json={"title":"Pasta", 
+                        "description": "All pasta all the time."})
 
+    response_body = post.get_json()
+
+
+    assert post.status_code == 201
+    assert response_body["Success"] == True
 
 
 
